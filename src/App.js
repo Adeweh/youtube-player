@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import { youtube } from './api/youtube'
+import SearchBar from './components/SearchBar/SearchBar'
+import VideoList from './components/Video/VideoList'
 
-function App() {
+const App = () => {
+  const [data, setData]= useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res =await youtube.get("search/",{
+        params: {
+          part: "snippet",
+          q: searchTerm,
+        }
+      });
+      setData(res.data.items);
+    };
+    fetchData();
+
+  }, [searchTerm] )
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {/* <Counter/> */}
+      <SearchBar setSearchTerm={setSearchTerm}/>
+      <VideoList items={data}/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
